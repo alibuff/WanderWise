@@ -1,0 +1,5 @@
+{
+  "name": "WanderWise",
+  "description": "AI-powered vacation destination recommender based on your personal travel preferences.",
+  "requestFramePermissions": []
+}
