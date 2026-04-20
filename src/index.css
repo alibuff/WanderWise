@@ -14,11 +14,22 @@
 
 @layer base {
   body {
-    @apply bg-med-cream text-med-blue antialiased;
+    @apply bg-med-cream text-med-blue antialiased min-h-screen;
+    background: radial-gradient(circle at top right, #FEFAE0 0%, #F4F1DE 50%, #E9EDC9 100%);
+    background-attachment: fixed;
   }
   
   h1, h2, h3, h4 {
     @apply font-serif;
+  }
+}
+
+@layer utilities {
+  .glow-terracotta {
+    box-shadow: 0 0 20px rgba(192, 94, 65, 0.3);
+  }
+  .glow-blue {
+    box-shadow: 0 0 20px rgba(30, 58, 95, 0.2);
   }
 }
 
