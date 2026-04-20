@@ -89,6 +89,9 @@ const COMMON_CITIES = [
   "Glasgow, UK", "Liverpool, UK", "Bristol, UK", "Leeds, UK", "Sheffield, UK",
   "Los Angeles, USA", "San Francisco, USA", "Chicago, USA", "Miami, USA", "Las Vegas, USA",
   "Seattle, USA", "Boston, USA", "Washington DC, USA", "Austin, USA", "Denver, USA",
+  "Philadelphia, USA", "Atlanta, USA", "Dallas, USA", "Houston, USA", "Phoenix, USA",
+  "Portland, USA", "San Diego, USA", "Nashville, USA", "New Orleans, USA", "Minneapolis, USA",
+  "Salt Lake City, USA", "Charlotte, USA", "Detroit, USA", "Orlando, USA", "San Antonio, USA",
   "Rio de Janeiro, Brazil", "Santiago, Chile", "Lima, Peru", "Bogota, Colombia",
   "Athens, Greece", "Venice, Italy", "Florence, Italy", "Milan, Italy", "Naples, Italy",
   "Nice, France", "Lyon, France", "Marseille, France", "Bordeaux, France",
@@ -184,11 +187,11 @@ export default function App() {
     if (value.trim().length > 0) {
       const filtered = COMMON_CITIES.filter(city => 
         city.toLowerCase().includes(value.toLowerCase())
-      ).slice(0, 8);
+      );
       setFilteredCities(filtered);
       setShowSuggestions(true);
     } else {
-      setFilteredCities(COMMON_CITIES.slice(0, 5));
+      setFilteredCities(COMMON_CITIES);
       setShowSuggestions(true);
     }
   };
@@ -718,11 +721,11 @@ export default function App() {
                           onChange={(e) => handleCityChange(e.target.value)}
                           onFocus={() => {
                             if (prefs.travelingFrom.trim().length === 0) {
-                              setFilteredCities(COMMON_CITIES.slice(0, 5));
+                              setFilteredCities(COMMON_CITIES);
                             } else {
                               const filtered = COMMON_CITIES.filter(city => 
                                 city.toLowerCase().includes(prefs.travelingFrom.toLowerCase())
-                              ).slice(0, 8);
+                              );
                               setFilteredCities(filtered);
                             }
                             setShowSuggestions(true);
@@ -736,7 +739,7 @@ export default function App() {
                               initial={{ opacity: 0, y: -10 }}
                               animate={{ opacity: 1, y: 0 }}
                               exit={{ opacity: 0, y: -10 }}
-                              className="absolute z-50 left-0 right-0 mt-2 bg-white rounded-3xl shadow-2xl border border-med-sand overflow-hidden"
+                              className="absolute z-50 left-0 right-0 mt-2 bg-white rounded-3xl shadow-2xl border border-med-sand overflow-hidden max-h-80 overflow-y-auto custom-scrollbar"
                             >
                               {filteredCities.map((city, idx) => (
                                 <button
