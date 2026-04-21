@@ -314,7 +314,7 @@ export default function App() {
       
       setResults(data);
       setStep('results');
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to get recommendations:", err);
       // Even on error, wait a bit so the transition isn't jarring
       const elapsedTime = Date.now() - startTime;
@@ -324,7 +324,18 @@ export default function App() {
       
       setStep('form');
       setFormStep(2);
-      setError("We encountered a cosmic drift. Please ensure your search preferences are clear or try again in a moment.");
+      
+      let message = "We encountered a cosmic drift. Please ensure your search preferences are clear or try again in a moment.";
+      if (err.message) {
+        if (err.message.includes("API_KEY_INVALID")) {
+          message = "Your celestial key (API Key) is invalid. Please check your configuration.";
+        } else if (err.message.includes("quota")) {
+          message = "Our star-charts are busy! The daily travel quota has been reached. Please try again tomorrow.";
+        } else {
+          message = `Connection issue: ${err.message}`;
+        }
+      }
+      setError(message);
     }
   };
 
