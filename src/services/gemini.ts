@@ -1,7 +1,12 @@
 import { GoogleGenAI, Type, ThinkingLevel } from "@google/genai";
 import { TravelPreferences, RecommendationResponse } from "../types";
 
-const API_KEY = process.env.GEMINI_API_KEY || (import.meta as any).env?.VITE_GEMINI_API_KEY || "";
+const API_KEY = (process.env.GEMINI_API_KEY as string) || (import.meta as any).env?.VITE_GEMINI_API_KEY || "";
+
+if (!API_KEY) {
+  console.error("GEMINI_API_KEY is not defined.");
+}
+
 const ai = new GoogleGenAI({ apiKey: API_KEY });
 
 function getItineraryLength(duration: string): number {
@@ -15,6 +20,9 @@ function getItineraryLength(duration: string): number {
 }
 
 export async function getVacationRecommendations(prefs: TravelPreferences): Promise<RecommendationResponse> {
+  if (!API_KEY) {
+    throw new Error("API key is missing. Please ensure VITE_GEMINI_API_KEY is set in your GitHub Secrets.");
+  }
   const itineraryDays = getItineraryLength(prefs.duration);
   const prompt = `
     Based on the following travel preferences, suggest exactly 3-4 ideal vacation destinations. Be concise but evocative.
