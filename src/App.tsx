@@ -33,7 +33,14 @@ import {
   Check,
   Home,
   Tag,
-  ArrowLeft
+  ArrowLeft,
+  Utensils,
+  History,
+  Mountain,
+  Waves,
+  Music,
+  Eye,
+  ShoppingBag
 } from 'lucide-react';
 import { TravelPreferences, Destination, RecommendationResponse } from './types';
 import { getVacationRecommendations, getDestinationDetails } from './services/gemini';
@@ -111,12 +118,12 @@ const SUGGESTED_ACTIVITIES = [
 ];
 
 const LOADING_QUOTES = [
-  "Finding secluded bays and sun-drenched shores...",
+  "Seeking out sacred peaks and sun-drenched shores...",
   "Consulting the local winds for the perfect breeze...",
   "Mapping out your personal slice of paradise...",
   "Checking the availability of the best sunset views...",
   "Curating an itinerary that resonates with your spirit...",
-  "Gathering the scents of lemon groves and salt air...",
+  "Gathering the scents of ancient forests and salt air...",
   "Discovering hidden gems away from the crowds..."
 ];
 
@@ -176,7 +183,6 @@ export default function App() {
   const [activityInput, setActivityInput] = useState('');
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null);
   const [loadingSimilar, setLoadingSimilar] = useState(false);
-  const [galleryIndex, setGalleryIndex] = useState(0);
   const [loadingQuoteIndex, setLoadingQuoteIndex] = useState(0);
   const [wishlist, setWishlist] = useState<Destination[]>(() => {
     try {
@@ -242,6 +248,8 @@ export default function App() {
   };
 
   const handleSimilarClick = async (name: string, country: string) => {
+    setLoadingSimilar(true);
+    
     // Check if we already have this destination in our current results
     const existing = results?.destinations.find(d => 
       d.name.toLowerCase() === name.toLowerCase() && 
@@ -249,18 +257,19 @@ export default function App() {
     );
 
     if (existing) {
-      setSelectedDestination(existing);
-      setGalleryIndex(0);
-      const modalContent = document.getElementById('modal-content');
-      if (modalContent) modalContent.scrollTop = 0;
+      // Artificial delay for local transitions so user sees the loading state
+      setTimeout(() => {
+        setSelectedDestination(existing);
+        setLoadingSimilar(false);
+        const modalContent = document.getElementById('modal-content');
+        if (modalContent) modalContent.scrollTop = 0;
+      }, 600);
       return;
     }
 
-    setLoadingSimilar(true);
     try {
       const details = await getDestinationDetails(name, country, prefs);
       setSelectedDestination(details);
-      setGalleryIndex(0);
       // Scroll modal to top
       const modalContent = document.getElementById('modal-content');
       if (modalContent) modalContent.scrollTop = 0;
@@ -1203,9 +1212,34 @@ export default function App() {
               initial={{ scale: 0.95, y: 40 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 40 }}
-              className="bg-med-cream w-full max-w-6xl max-h-[90vh] rounded-[4rem] overflow-hidden shadow-3xl flex flex-col md:flex-row border border-white/20"
+              className="bg-med-cream w-full max-w-6xl max-h-[90vh] rounded-[4rem] overflow-hidden shadow-3xl flex flex-col md:flex-row border border-white/20 relative"
               onClick={(e) => e.stopPropagation()}
             >
+              <AnimatePresence>
+                {loadingSimilar && (
+                  <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="absolute inset-0 z-[100] bg-med-blue/60 backdrop-blur-xl flex flex-col items-center justify-center text-center p-8"
+                  >
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                      className="w-20 h-20 border-4 border-white/20 border-t-med-sand rounded-full mb-8 shadow-2xl"
+                    />
+                    <motion.p 
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="text-3xl font-serif italic text-white mb-4"
+                    >
+                      Curating your next sanctuary...
+                    </motion.p>
+                    <p className="text-med-sand/60 font-bold uppercase tracking-[0.3em] text-xs">Finding the perfect match for you</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
               {/* Left Side: Image & Key Info */}
               <div className="md:w-5/12 relative h-80 md:h-auto">
                 <SafeImage 
@@ -1251,16 +1285,6 @@ export default function App() {
 
               {/* Right Side: Travel Guide Content */}
               <div id="modal-content" className="md:w-7/12 p-8 md:p-12 lg:p-16 overflow-y-auto custom-scrollbar bg-med-cream/50 relative">
-                {loadingSimilar && (
-                  <div className="absolute inset-0 z-50 bg-med-cream/80 backdrop-blur-sm flex flex-col items-center justify-center text-center p-8">
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                      className="w-16 h-16 border-4 border-med-sand border-t-med-terracotta rounded-full mb-6"
-                    />
-                    <p className="text-xl font-serif italic text-med-blue">Preparing your next sanctuary...</p>
-                  </div>
-                )}
                 <div className="space-y-16 md:space-y-24">
                   {/* Quick Snapshot: Weather, Map, & Flights */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
@@ -1336,55 +1360,50 @@ export default function App() {
                     </a>
                   </div>
 
-                  {/* Photo Gallery Carousel */}
+                  {/* Signature Vibes & Highlights */}
                   <section>
-                    <div className="flex items-center justify-between mb-10">
-                      <div className="flex items-center gap-4">
-                        <div className="p-3 bg-med-sand rounded-2xl">
-                          <Sparkles className="w-6 h-6 text-med-terracotta" />
-                        </div>
-                        <h3 className="text-3xl font-serif italic text-med-blue">Gallery</h3>
+                    <div className="flex items-center gap-4 mb-10">
+                      <div className="p-3 bg-med-sand rounded-2xl">
+                        <Sparkles className="w-6 h-6 text-med-terracotta" />
                       </div>
-                      <div className="flex gap-2">
-                        <button 
-                          onClick={() => setGalleryIndex(prev => (prev === 0 ? selectedDestination.galleryImages.length - 1 : prev - 1))}
-                          className="p-3 rounded-full bg-white border border-med-sand hover:bg-med-sand transition-colors"
-                        >
-                          <ChevronLeft className="w-5 h-5 text-med-blue" />
-                        </button>
-                        <button 
-                          onClick={() => setGalleryIndex(prev => (prev === selectedDestination.galleryImages.length - 1 ? 0 : prev + 1))}
-                          className="p-3 rounded-full bg-white border border-med-sand hover:bg-med-sand transition-colors"
-                        >
-                          <ChevronRight className="w-5 h-5 text-med-blue" />
-                        </button>
-                      </div>
+                      <h3 className="text-3xl font-serif italic text-med-blue">Signature Vibes</h3>
                     </div>
-                    <div className="relative aspect-video rounded-[3rem] overflow-hidden shadow-xl">
-                      <AnimatePresence mode="wait">
-                        <motion.div
-                          key={galleryIndex}
-                          initial={{ opacity: 0, scale: 1.1 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.9 }}
-                          transition={{ duration: 0.5 }}
-                          className="absolute inset-0"
-                        >
-                          <SafeImage
-                            src={selectedDestination.galleryImages[galleryIndex]}
-                            alt={`${selectedDestination.name} gallery ${galleryIndex}`}
-                            className="w-full h-full object-cover"
-                          />
-                        </motion.div>
-                      </AnimatePresence>
-                      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
-                        {selectedDestination.galleryImages.map((_, i) => (
-                          <div 
-                            key={i} 
-                            className={`w-2 h-2 rounded-full transition-all ${i === galleryIndex ? 'bg-white w-6' : 'bg-white/50'}`} 
-                          />
-                        ))}
-                      </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                      {selectedDestination.topExperiences.slice(0, 4).map((exp, i) => {
+                        const Icon = (text: string) => {
+                          const t = text.toLowerCase();
+                          if (t.includes('food') || t.includes('culinary') || t.includes('eat') || t.includes('dining') || t.includes('cuisine') || t.includes('gastronomy')) return <Utensils className="w-6 h-6" />;
+                          if (t.includes('history') || t.includes('ancient') || t.includes('old') || t.includes('museum') || t.includes('ruins') || t.includes('heritage')) return <History className="w-6 h-6" />;
+                          if (t.includes('nature') || t.includes('forest') || t.includes('mountain') || t.includes('hike') || t.includes('outdoor') || t.includes('park')) return <Mountain className="w-6 h-6" />;
+                          if (t.includes('water') || t.includes('beach') || t.includes('ocean') || t.includes('sea') || t.includes('lake') || t.includes('swim') || t.includes('coast')) return <Waves className="w-6 h-6" />;
+                          if (t.includes('night') || t.includes('party') || t.includes('dance') || t.includes('bar') || t.includes('club') || t.includes('entertainment')) return <Music className="w-6 h-6" />;
+                          if (t.includes('view') || t.includes('panorama') || t.includes('scenic') || t.includes('vantage') || t.includes('skyline')) return <Eye className="w-6 h-6" />;
+                          if (t.includes('shop') || t.includes('market') || t.includes('fashion') || t.includes('craft') || t.includes('artisan')) return <ShoppingBag className="w-6 h-6" />;
+                          return <Compass className="w-6 h-6" />;
+                        };
+
+                        const bgColors = [
+                          'bg-med-terracotta/10 text-med-terracotta border-med-terracotta/20',
+                          'bg-med-blue/10 text-med-blue border-med-blue/20',
+                          'bg-med-olive/10 text-med-olive border-med-olive/20',
+                          'bg-med-sand/20 text-med-blue border-med-sand/40'
+                        ];
+
+                        return (
+                          <motion.div
+                            key={i}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ delay: i * 0.1 }}
+                            className={`p-8 rounded-[2.5rem] border ${bgColors[i % bgColors.length]} flex flex-col items-center text-center gap-4 group hover:shadow-lg transition-all`}
+                          >
+                            <div className="p-4 rounded-2xl bg-white shadow-sm group-hover:scale-110 transition-transform">
+                              {Icon(exp)}
+                            </div>
+                            <p className="font-serif italic text-lg leading-relaxed">{exp}</p>
+                          </motion.div>
+                        );
+                      })}
                     </div>
                   </section>
 

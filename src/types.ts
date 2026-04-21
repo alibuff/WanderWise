@@ -57,7 +57,6 @@ export interface Destination {
     med: string;
     high: string;
   };
-  galleryImages: string[];
   similarDestinations: {
     name: string;
     country: string;
