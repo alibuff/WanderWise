@@ -1264,53 +1264,63 @@ export default function App() {
                 <div className="space-y-16 md:space-y-24">
                   {/* Quick Snapshot: Weather, Map, & Flights */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-                    <section className="bg-white p-6 sm:p-8 rounded-[3rem] border border-med-sand shadow-sm flex flex-col justify-between min-h-[220px]">
-                      <div className="flex items-center gap-4 mb-6 sm:mb-8">
-                        <div className="p-3 bg-med-sand rounded-2xl shrink-0">
-                          <Thermometer className="w-5 h-5 sm:w-6 sm:h-6 text-med-terracotta" />
+                    <a 
+                      href={`https://www.google.com/search?q=weather+in+${encodeURIComponent(selectedDestination.name + ', ' + selectedDestination.country)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-white p-5 sm:p-6 rounded-[3rem] border border-med-sand shadow-sm flex flex-col justify-between min-h-[180px] sm:min-h-[220px] group hover:border-med-terracotta transition-all"
+                    >
+                      <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                        <div className="p-2 sm:p-3 bg-med-sand rounded-2xl shrink-0 group-hover:bg-med-terracotta/10 transition-colors">
+                          <Thermometer className="w-4 h-4 sm:w-5 sm:h-5 text-med-terracotta" />
                         </div>
-                        <h3 className="text-lg sm:text-xl font-serif italic text-med-blue whitespace-nowrap">Weather</h3>
+                        <h3 className="text-base sm:text-lg font-serif italic text-med-blue whitespace-nowrap">Weather</h3>
                       </div>
-                      <div className="grid grid-cols-2 gap-4 items-end">
+                      <div className="grid grid-cols-2 gap-2 sm:gap-4 items-end">
                         <div className="overflow-hidden">
-                          <p className="text-2xl sm:text-3xl font-bold text-med-blue leading-none mb-2 truncate">{selectedDestination.weather.avgTemp}</p>
-                          <p className="text-[10px] text-med-olive italic font-bold uppercase tracking-[0.15em] opacity-60">Avg Temp</p>
+                          <p className="text-xl sm:text-2xl font-bold text-med-blue leading-none mb-1.5 truncate">{selectedDestination.weather.avgTemp}</p>
+                          <p className="text-[9px] sm:text-[10px] text-med-olive italic font-bold uppercase tracking-[0.1em] sm:tracking-[0.15em] opacity-60">Avg Temp</p>
                         </div>
                         <div className="text-right overflow-hidden">
-                          <p className="text-lg sm:text-xl font-bold text-med-blue leading-none mb-2 truncate">{selectedDestination.weather.rainfall}</p>
-                          <p className="text-[10px] text-med-olive italic font-bold uppercase tracking-[0.15em] opacity-60">Rainfall</p>
+                          <p className="text-base sm:text-lg font-bold text-med-blue leading-none mb-1.5 truncate">{selectedDestination.weather.rainfall}</p>
+                          <p className="text-[9px] sm:text-[10px] text-med-olive italic font-bold uppercase tracking-[0.1em] sm:tracking-[0.15em] opacity-60">Rainfall</p>
                         </div>
                       </div>
-                    </section>
+                    </a>
 
-                    <section className="bg-white p-6 sm:p-8 rounded-[3rem] border border-med-sand shadow-sm flex flex-col justify-between min-h-[220px]">
-                      <div className="flex items-center gap-4 mb-6 sm:mb-8">
-                        <div className="p-3 bg-med-sand rounded-2xl shrink-0">
-                          <Plane className="w-5 h-5 sm:w-6 sm:h-6 text-med-terracotta" />
+                    <a 
+                      href={`https://www.google.com/search?q=flights+to+${encodeURIComponent(selectedDestination.name + ', ' + selectedDestination.country)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-white p-5 sm:p-6 rounded-[3rem] border border-med-sand shadow-sm flex flex-col justify-between min-h-[180px] sm:min-h-[220px] group hover:border-med-terracotta transition-all"
+                    >
+                      <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                        <div className="p-2 sm:p-3 bg-med-sand rounded-2xl shrink-0 group-hover:bg-med-terracotta/10 transition-colors">
+                          <Plane className="w-4 h-4 sm:w-5 sm:h-5 text-med-terracotta" />
                         </div>
-                        <h3 className="text-lg sm:text-xl font-serif italic text-med-blue whitespace-nowrap">Flights</h3>
+                        <h3 className="text-base sm:text-lg font-serif italic text-med-blue whitespace-nowrap">Flights</h3>
                       </div>
                       <div className="overflow-hidden">
-                        <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2">
-                          <p className="text-xl sm:text-2xl font-bold text-med-blue">{selectedDestination.flightEstimate.min}</p>
-                          <div className="h-[2px] w-3 sm:w-4 bg-med-sand shrink-0" />
-                          <p className="text-xl sm:text-2xl font-bold text-med-blue">{selectedDestination.flightEstimate.max}</p>
+                        <div className="flex flex-wrap items-center gap-1.5 sm:gap-3 mb-1.5">
+                          <p className="text-lg sm:text-xl font-bold text-med-blue">{selectedDestination.flightEstimate.min}</p>
+                          <div className="h-[2px] w-2 sm:w-4 bg-med-sand shrink-0" />
+                          <p className="text-lg sm:text-xl font-bold text-med-blue">{selectedDestination.flightEstimate.max}</p>
                         </div>
-                        <p className="text-[10px] text-med-olive italic font-bold uppercase tracking-[0.15em] opacity-60">Est. Round-trip</p>
+                        <p className="text-[9px] sm:text-[10px] text-med-olive italic font-bold uppercase tracking-[0.1em] sm:tracking-[0.15em] opacity-60">Est. Round-trip</p>
                       </div>
-                    </section>
+                    </a>
 
                     <a 
                       href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(selectedDestination.name + ', ' + selectedDestination.country)}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="bg-white p-6 sm:p-8 rounded-[3rem] border border-med-sand shadow-sm overflow-hidden relative group block hover:border-med-terracotta transition-all min-h-[220px]"
+                      className="bg-white p-5 sm:p-6 rounded-[3rem] border border-med-sand shadow-sm overflow-hidden relative group block hover:border-med-terracotta transition-all min-h-[180px] sm:min-h-[220px]"
                     >
-                      <div className="flex items-center gap-4 mb-6 sm:mb-8">
-                        <div className="p-3 bg-med-sand rounded-2xl shrink-0">
-                          <MapPin className="w-5 h-5 sm:w-6 sm:h-6 text-med-terracotta" />
+                      <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                        <div className="p-2 sm:p-3 bg-med-sand rounded-2xl shrink-0 group-hover:bg-med-terracotta/10 transition-colors">
+                          <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-med-terracotta" />
                         </div>
-                        <h3 className="text-lg sm:text-xl font-serif italic text-med-blue whitespace-nowrap">Location</h3>
+                        <h3 className="text-base sm:text-lg font-serif italic text-med-blue whitespace-nowrap">Location</h3>
                       </div>
                       <div className="h-20 bg-med-sand/20 rounded-2xl flex items-center justify-center relative overflow-hidden">
                         <img 
@@ -1452,7 +1462,7 @@ export default function App() {
                     </div>
                     <div className="grid sm:grid-cols-2 gap-6">
                       {selectedDestination.popularActivities.map((act, i) => (
-                        <div key={i} className="bg-white p-8 rounded-[2.5rem] border border-med-sand shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500">
+                        <div key={i} className="bg-white p-6 sm:p-8 rounded-[2.5rem] border border-med-sand shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500">
                           <div className="flex items-center justify-between mb-4">
                             <span className={`text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full ${
                               act.type === 'solo' ? 'bg-med-cream text-med-olive' : 'bg-med-terracotta/10 text-med-terracotta'
@@ -1463,9 +1473,15 @@ export default function App() {
                           <h5 className="text-xl font-serif italic text-med-blue mb-2">{act.name}</h5>
                           <p className="text-sm text-med-olive font-medium mb-6 italic opacity-80 leading-relaxed">{act.description}</p>
                           {act.type === 'bookable' && (
-                            <button className="text-med-terracotta text-sm font-bold flex items-center gap-2 hover:gap-4 transition-all group">
-                              Book on {act.bookingUrl || 'Partner Site'} <ArrowRight className="w-4 h-4 group-hover:translate-x-1" />
-                            </button>
+                            <a 
+                              href={act.bookingUrl?.startsWith('http') ? act.bookingUrl : `https://www.google.com/search?q=${encodeURIComponent(act.name + ' ' + selectedDestination.name + ' booking')}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-med-terracotta text-xs sm:text-sm font-bold flex items-center gap-2 hover:gap-3 transition-all group w-fit max-w-full"
+                            >
+                              <span className="truncate">Book on {act.bookingUrl && act.bookingUrl.startsWith('http') ? 'Partner Site' : (act.bookingUrl || 'Partner Site')}</span>
+                              <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-1 shrink-0" />
+                            </a>
                           )}
                         </div>
                       ))}
@@ -1483,13 +1499,13 @@ export default function App() {
                       </div>
                       <div className="grid sm:grid-cols-2 gap-6">
                         {selectedDestination.neighborhoods.map((area, i) => (
-                          <div key={i} className="bg-white p-8 rounded-[2.5rem] border border-med-sand shadow-sm">
-                            <div className="flex items-center justify-between mb-4">
-                              <h5 className="text-xl font-serif italic text-med-blue">{area.name}</h5>
-                              <span className="text-sm font-bold text-med-terracotta">{area.avgNightlyPrice}<span className="text-[10px] text-med-olive opacity-60 ml-1">/night</span></span>
+                          <div key={i} className="bg-white p-6 sm:p-8 rounded-[2.5rem] border border-med-sand shadow-sm">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                              <h5 className="text-xl font-serif italic text-med-blue truncate">{area.name}</h5>
+                              <span className="text-sm font-bold text-med-terracotta shrink-0">{area.avgNightlyPrice}<span className="text-[10px] text-med-olive opacity-60 ml-1">/night</span></span>
                             </div>
                             <p className="text-sm text-med-olive font-medium mb-6 italic opacity-80 leading-relaxed">{area.description}</p>
-                            <div className="flex flex-wrap gap-2">
+                            <div className="flex flex-wrap gap-2 mb-6">
                               {area.vibe.map((tag, j) => (
                                 <span key={j} className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full bg-med-cream text-med-olive border border-med-sand/50">
                                   <Tag className="w-3 h-3 opacity-60" />
@@ -1497,6 +1513,15 @@ export default function App() {
                                 </span>
                               ))}
                             </div>
+                            <a 
+                              href={area.bookingUrl?.startsWith('http') ? area.bookingUrl : `https://www.google.com/search?q=hotels+in+${encodeURIComponent(area.name + ' ' + selectedDestination.name)}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-med-terracotta text-xs sm:text-sm font-bold flex items-center gap-2 hover:gap-3 transition-all group w-fit max-w-full"
+                            >
+                              <span className="truncate">Book Stay in {area.name}</span>
+                              <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-1 shrink-0" />
+                            </a>
                           </div>
                         ))}
                       </div>

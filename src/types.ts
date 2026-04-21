@@ -33,6 +33,7 @@ export interface Neighborhood {
   vibe: string[];
   avgNightlyPrice: string;
   description: string;
+  bookingUrl?: string;
 }
 
 export interface Destination {

@@ -156,7 +156,8 @@ export async function getVacationRecommendations(prefs: TravelPreferences): Prom
                         items: { type: Type.STRING }
                       },
                       avgNightlyPrice: { type: Type.STRING },
-                      description: { type: Type.STRING }
+                      description: { type: Type.STRING },
+                      bookingUrl: { type: Type.STRING, description: "A link to book accommodation in this neighborhood (e.g. Booking.com, Airbnb, or Google Hotels search)" }
                     },
                     required: ["name", "vibe", "avgNightlyPrice", "description"]
                   }
