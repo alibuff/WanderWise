@@ -3,10 +3,6 @@ import { TravelPreferences, RecommendationResponse } from "../types";
 
 const API_KEY = (process.env.GEMINI_API_KEY as string) || (import.meta as any).env?.VITE_GEMINI_API_KEY || "";
 
-if (!API_KEY) {
-  console.error("GEMINI_API_KEY is not defined.");
-}
-
 const ai = new GoogleGenAI({ apiKey: API_KEY });
 
 function getItineraryLength(duration: string): number {
