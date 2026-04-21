@@ -1,4 +1,4 @@
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenAI, Type, ThinkingLevel } from "@google/genai";
 import { TravelPreferences, RecommendationResponse } from "../types";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
@@ -16,7 +16,7 @@ function getItineraryLength(duration: string): number {
 export async function getVacationRecommendations(prefs: TravelPreferences): Promise<RecommendationResponse> {
   const itineraryDays = getItineraryLength(prefs.duration);
   const prompt = `
-    Based on the following travel preferences, suggest between 3 and 10 ideal vacation destinations. The number of suggestions should depend on how specific or broad the preferences are, but always aim for at least 3.
+    Based on the following travel preferences, suggest exactly 3-4 ideal vacation destinations. Be concise but evocative.
     
     Preferences:
     - Traveling From: ${prefs.travelingFrom || 'Unknown'}
@@ -26,33 +26,17 @@ export async function getVacationRecommendations(prefs: TravelPreferences): Prom
     - Duration: ${prefs.duration}
     - Travel Styles: ${prefs.travelStyle.join(", ")}
     - Companions: ${prefs.companions}
-    - Max Travel Distance: ${prefs.maxTravelDistance} (Short = same continent, Medium = within 6-8 hours, Long = anywhere, Any = no preference)
-    ${prefs.freeText ? `- Additional Context/Description: ${prefs.freeText}` : ''}
+    - Max Travel Distance: ${prefs.maxTravelDistance}
+    ${prefs.freeText ? `- Additional Context: ${prefs.freeText}` : ''}
     
-    For each destination, provide:
-    1. Name and Country
-    2. A brief, enticing description.
-    3. "Why it fits" - explaining how it matches their specific preferences.
-    4. Top 3 experiences/activities there.
-    5. A list of 6 "popularActivities". For each, include a name, description, and "type" ('solo' for things to do on their own, 'bookable' for things usually booked via a tour/site). If 'bookable', suggest a placeholder booking site name like "Viator" or "GetYourGuide" in a "bookingUrl" field (just the name of the service).
-    6. A ${itineraryDays}-day sample "itinerary". Each day should have a title and 3 specific activities.
-    7. Best time to visit (e.g., "Spring (March - May)").
-    8. Estimated daily cost (in USD).
-    9. A keyword for a beautiful image of this place.
-    10. travelDistanceCategory: 'short', 'medium', or 'long' based on their starting location.
-    11. weather: avgTemp (e.g., "24°C") and rainfall (e.g., "Low").
-    12. budgetBreakdown: low, med, high daily estimates.
-    13. galleryImages: 3 keywords for additional beautiful images.
-    14. similarDestinations: 2 other places (name and country) that have a similar vibe.
-    15. packingList: A tailored packing list with 4 categories (e.g., "Essentials", "Clothing", "Gear", "Personal Care"). Each category should have 4-6 specific items based on the destination's climate and activities.
-    16. flightEstimate: An object with "min" and "max" estimated round-trip flight costs (e.g., "$450", "$800") from their starting location to the destination.
-    17. neighborhoods: A list of 2-4 recommended neighborhoods to stay in. For each, provide: name, vibe (array of tags like "trendy", "quiet", "beachfront"), avgNightlyPrice (e.g., "$120"), and a brief description.
+    For each, provide the full structured details as requested.
   `;
 
   const response = await ai.models.generateContent({
     model: "gemini-3-flash-preview",
     contents: prompt,
     config: {
+      thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
       responseMimeType: "application/json",
       responseSchema: {
         type: Type.OBJECT,
@@ -218,6 +202,7 @@ export async function getDestinationDetails(name: string, country: string, prefs
     model: "gemini-3-flash-preview",
     contents: prompt,
     config: {
+      thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
       responseMimeType: "application/json",
       responseSchema: {
         type: Type.OBJECT,
@@ -360,6 +345,7 @@ export async function chatConcierge(message: string, currentPrefs?: TravelPrefer
     model: "gemini-3-flash-preview",
     contents: message,
     config: {
+      thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
       systemInstruction: `You are "Sia", the Mediterranean Travel Concierge for "Travel Sanctuary". 
       Your tone is elegant, helpful, and sophisticated. 
       Help users find their dream Mediterranean or coastal sanctuary.

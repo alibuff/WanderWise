@@ -110,6 +110,16 @@ const SUGGESTED_ACTIVITIES = [
   "Canyoning", "Kayaking", "White Water Rafting", "Zip Lining", "Bungee Jumping"
 ];
 
+const LOADING_QUOTES = [
+  "Finding secluded bays and sun-drenched shores...",
+  "Consulting the local winds for the perfect breeze...",
+  "Mapping out your personal slice of paradise...",
+  "Checking the availability of the best sunset views...",
+  "Curating an itinerary that resonates with your spirit...",
+  "Gathering the scents of lemon groves and salt air...",
+  "Discovering hidden gems away from the crowds..."
+];
+
 const SafeImage = ({ src, alt, className, ...props }: any) => {
   const [error, setError] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
@@ -167,6 +177,7 @@ export default function App() {
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null);
   const [loadingSimilar, setLoadingSimilar] = useState(false);
   const [galleryIndex, setGalleryIndex] = useState(0);
+  const [loadingQuoteIndex, setLoadingQuoteIndex] = useState(0);
   const [wishlist, setWishlist] = useState<Destination[]>(() => {
     try {
       const saved = localStorage.getItem('wanderwise_wishlist_data');
@@ -187,6 +198,13 @@ export default function App() {
   const activitySuggestionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (step === 'loading') {
+      interval = setInterval(() => {
+        setLoadingQuoteIndex((prev) => (prev + 1) % LOADING_QUOTES.length);
+      }, 3000);
+    }
+
     const handleClickOutside = (event: MouseEvent) => {
       if (suggestionRef.current && !suggestionRef.current.contains(event.target as Node)) {
         setShowSuggestions(false);
@@ -196,8 +214,12 @@ export default function App() {
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [step]);
 
   const handleCityChange = (value: string) => {
     setPrefs({ ...prefs, travelingFrom: value });
@@ -863,34 +885,94 @@ export default function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="h-screen flex flex-col items-center justify-center text-center px-4 bg-med-cream"
+            className="h-screen flex flex-col items-center justify-center text-center px-4 bg-med-cream relative overflow-hidden"
           >
-            <div className="relative mb-16">
+            {/* Elegant Background Accents */}
+            <motion.div 
+              animate={{ 
+                scale: [1, 1.2, 1],
+                rotate: [0, 90, 180]
+              }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              className="absolute -top-40 -right-40 w-96 h-96 bg-med-sand/30 rounded-full blur-3xl" 
+            />
+            <motion.div 
+              animate={{ 
+                scale: [1.2, 1, 1.2],
+                rotate: [180, 90, 0]
+              }}
+              transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+              className="absolute -bottom-40 -left-40 w-96 h-96 bg-med-terracotta/10 rounded-full blur-3xl" 
+            />
+
+            <div className="relative mb-20">
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                className="w-64 h-64 border-[1px] border-med-blue/10 rounded-full"
+              />
+              <motion.div
+                animate={{ rotate: -360 }}
+                transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-4 border-[1px] border-dashed border-med-terracotta/20 rounded-full"
+              />
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-                className="w-48 h-48 border-[2px] border-med-sand border-t-med-terracotta rounded-full"
+                className="absolute inset-10 border-[3px] border-transparent border-t-med-terracotta rounded-full shadow-lg shadow-med-terracotta/20"
               />
               <motion.div
-                animate={{ scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }}
-                transition={{ duration: 3, repeat: Infinity }}
+                animate={{ 
+                  scale: [1, 1.05, 1],
+                }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
               >
-                <Compass className="w-20 h-20 text-med-blue" />
+                <Compass className="w-24 h-24 text-med-blue" />
               </motion.div>
             </div>
-            <h2 className="text-5xl font-serif italic mb-8 tracking-tight text-med-blue">Consulting the Stars...</h2>
-            <div className="flex gap-3 mb-8">
-              {[0, 1, 2].map(i => (
-                <motion.div
-                  key={i}
-                  animate={{ y: [0, -12, 0], opacity: [0.3, 1, 0.3] }}
-                  transition={{ duration: 1, delay: i * 0.2, repeat: Infinity }}
-                  className="w-4 h-4 bg-med-terracotta rounded-full shadow-lg shadow-med-terracotta/20"
-                />
-              ))}
+
+            <div className="max-w-2xl">
+              <motion.span 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-med-terracotta font-bold uppercase tracking-[0.5em] text-xs mb-8 block"
+              >
+                Generating Your Sanctuary
+              </motion.span>
+              
+              <AnimatePresence mode="wait">
+                <motion.h2 
+                  key={loadingQuoteIndex}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                  className="text-4xl md:text-5xl font-serif italic mb-12 tracking-tight text-med-blue h-32 flex items-center justify-center leading-relaxed"
+                >
+                  {LOADING_QUOTES[loadingQuoteIndex]}
+                </motion.h2>
+              </AnimatePresence>
+
+              <div className="flex flex-col items-center gap-6">
+                <div className="w-64 h-1 bg-med-sand rounded-full overflow-hidden relative">
+                  <motion.div 
+                    animate={{ 
+                      x: [-256, 256],
+                    }}
+                    transition={{ 
+                      duration: 2, 
+                      repeat: Infinity, 
+                      ease: "easeInOut" 
+                    }}
+                    className="absolute inset-y-0 w-32 bg-gradient-to-r from-transparent via-med-terracotta to-transparent"
+                  />
+                </div>
+                <p className="text-med-olive text-sm font-bold uppercase tracking-[0.2em] opacity-40">
+                  Refined Travel Intelligence
+                </p>
+              </div>
             </div>
-            <p className="text-med-olive text-2xl max-w-md font-medium italic opacity-80">We're scanning the globe for the sanctuaries that speak your language.</p>
           </motion.div>
         )}
 
