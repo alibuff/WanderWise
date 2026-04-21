@@ -1104,7 +1104,9 @@ export default function App() {
                       <MapPin className="w-5 h-5" />
                       <span className="text-sm font-bold uppercase tracking-[0.3em]">{dest.country}</span>
                     </div>
-                    <h3 className="text-5xl md:text-6xl font-serif italic text-white mb-6 leading-tight">{dest.name}</h3>
+                    <h3 className={`font-serif italic text-white mb-6 leading-tight ${
+                      dest.name.length > 15 ? 'text-4xl md:text-5xl' : 'text-5xl md:text-6xl'
+                    }`}>{dest.name}</h3>
                     
                     <div className="max-h-0 group-hover:max-h-64 overflow-hidden transition-all duration-700 ease-in-out">
                       <p className="text-med-cream/80 text-lg mb-8 leading-relaxed font-medium line-clamp-3 italic">
@@ -1262,37 +1264,37 @@ export default function App() {
                 <div className="space-y-16 md:space-y-24">
                   {/* Quick Snapshot: Weather, Map, & Flights */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-                    <section className="bg-white p-8 rounded-[3rem] border border-med-sand shadow-sm flex flex-col justify-between min-h-[200px]">
-                      <div className="flex items-center gap-4 mb-8">
+                    <section className="bg-white p-6 sm:p-8 rounded-[3rem] border border-med-sand shadow-sm flex flex-col justify-between min-h-[220px]">
+                      <div className="flex items-center gap-4 mb-6 sm:mb-8">
                         <div className="p-3 bg-med-sand rounded-2xl shrink-0">
-                          <Thermometer className="w-6 h-6 text-med-terracotta" />
+                          <Thermometer className="w-5 h-5 sm:w-6 sm:h-6 text-med-terracotta" />
                         </div>
-                        <h3 className="text-xl font-serif italic text-med-blue">Weather</h3>
+                        <h3 className="text-lg sm:text-xl font-serif italic text-med-blue whitespace-nowrap">Weather</h3>
                       </div>
-                      <div className="flex items-end justify-between gap-4">
-                        <div className="flex-1">
-                          <p className="text-3xl font-bold text-med-blue leading-none mb-2">{selectedDestination.weather.avgTemp}</p>
+                      <div className="grid grid-cols-2 gap-4 items-end">
+                        <div className="overflow-hidden">
+                          <p className="text-2xl sm:text-3xl font-bold text-med-blue leading-none mb-2 truncate">{selectedDestination.weather.avgTemp}</p>
                           <p className="text-[10px] text-med-olive italic font-bold uppercase tracking-[0.15em] opacity-60">Avg Temp</p>
                         </div>
-                        <div className="text-right flex-1">
-                          <p className="text-xl font-bold text-med-blue leading-none mb-2">{selectedDestination.weather.rainfall}</p>
+                        <div className="text-right overflow-hidden">
+                          <p className="text-lg sm:text-xl font-bold text-med-blue leading-none mb-2 truncate">{selectedDestination.weather.rainfall}</p>
                           <p className="text-[10px] text-med-olive italic font-bold uppercase tracking-[0.15em] opacity-60">Rainfall</p>
                         </div>
                       </div>
                     </section>
 
-                    <section className="bg-white p-8 rounded-[3rem] border border-med-sand shadow-sm flex flex-col justify-between min-h-[200px]">
-                      <div className="flex items-center gap-4 mb-8">
+                    <section className="bg-white p-6 sm:p-8 rounded-[3rem] border border-med-sand shadow-sm flex flex-col justify-between min-h-[220px]">
+                      <div className="flex items-center gap-4 mb-6 sm:mb-8">
                         <div className="p-3 bg-med-sand rounded-2xl shrink-0">
-                          <Plane className="w-6 h-6 text-med-terracotta" />
+                          <Plane className="w-5 h-5 sm:w-6 sm:h-6 text-med-terracotta" />
                         </div>
-                        <h3 className="text-xl font-serif italic text-med-blue">Flights</h3>
+                        <h3 className="text-lg sm:text-xl font-serif italic text-med-blue whitespace-nowrap">Flights</h3>
                       </div>
-                      <div>
-                        <div className="flex items-center gap-3 mb-2">
-                          <p className="text-2xl font-bold text-med-blue">{selectedDestination.flightEstimate.min}</p>
-                          <div className="h-[2px] w-4 bg-med-sand" />
-                          <p className="text-2xl font-bold text-med-blue">{selectedDestination.flightEstimate.max}</p>
+                      <div className="overflow-hidden">
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2">
+                          <p className="text-xl sm:text-2xl font-bold text-med-blue">{selectedDestination.flightEstimate.min}</p>
+                          <div className="h-[2px] w-3 sm:w-4 bg-med-sand shrink-0" />
+                          <p className="text-xl sm:text-2xl font-bold text-med-blue">{selectedDestination.flightEstimate.max}</p>
                         </div>
                         <p className="text-[10px] text-med-olive italic font-bold uppercase tracking-[0.15em] opacity-60">Est. Round-trip</p>
                       </div>
@@ -1302,13 +1304,13 @@ export default function App() {
                       href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(selectedDestination.name + ', ' + selectedDestination.country)}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="bg-white p-8 rounded-[3rem] border border-med-sand shadow-sm overflow-hidden relative group block hover:border-med-terracotta transition-all min-h-[200px]"
+                      className="bg-white p-6 sm:p-8 rounded-[3rem] border border-med-sand shadow-sm overflow-hidden relative group block hover:border-med-terracotta transition-all min-h-[220px]"
                     >
-                      <div className="flex items-center gap-4 mb-8">
+                      <div className="flex items-center gap-4 mb-6 sm:mb-8">
                         <div className="p-3 bg-med-sand rounded-2xl shrink-0">
-                          <MapPin className="w-6 h-6 text-med-terracotta" />
+                          <MapPin className="w-5 h-5 sm:w-6 sm:h-6 text-med-terracotta" />
                         </div>
-                        <h3 className="text-xl font-serif italic text-med-blue">Location</h3>
+                        <h3 className="text-lg sm:text-xl font-serif italic text-med-blue whitespace-nowrap">Location</h3>
                       </div>
                       <div className="h-20 bg-med-sand/20 rounded-2xl flex items-center justify-center relative overflow-hidden">
                         <img 
