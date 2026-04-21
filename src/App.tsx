@@ -192,6 +192,7 @@ export default function App() {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [filteredCities, setFilteredCities] = useState<string[]>([]);
   const suggestionRef = useRef<HTMLDivElement>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const [showActivitySuggestions, setShowActivitySuggestions] = useState(false);
   const [filteredActivities, setFilteredActivities] = useState<string[]>([]);
@@ -297,16 +298,33 @@ export default function App() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     setStep('loading');
     setFormStep(3);
+    
+    const startTime = Date.now();
     try {
       const data = await getVacationRecommendations(prefs);
+      
+      // Ensure loading screen is visible for at least 2.5 seconds for UX
+      const elapsedTime = Date.now() - startTime;
+      if (elapsedTime < 2500) {
+        await new Promise(resolve => setTimeout(resolve, 2500 - elapsedTime));
+      }
+      
       setResults(data);
       setStep('results');
-    } catch (error) {
-      console.error("Failed to get recommendations:", error);
+    } catch (err) {
+      console.error("Failed to get recommendations:", err);
+      // Even on error, wait a bit so the transition isn't jarring
+      const elapsedTime = Date.now() - startTime;
+      if (elapsedTime < 1500) {
+        await new Promise(resolve => setTimeout(resolve, 1500 - elapsedTime));
+      }
+      
       setStep('form');
       setFormStep(2);
+      setError("We encountered a cosmic drift. Please ensure your search preferences are clear or try again in a moment.");
     }
   };
 
@@ -852,6 +870,24 @@ export default function App() {
                         </AnimatePresence>
                       </div>
                     </section>
+
+                    <AnimatePresence>
+                      {error && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="mb-8 p-6 bg-red-50 border border-red-200 rounded-3xl flex items-start gap-4 text-red-800"
+                        >
+                          <Info className="w-6 h-6 shrink-0 mt-1" />
+                          <div className="flex-1">
+                            <p className="font-bold mb-1">Navigation Error</p>
+                            <p className="text-sm opacity-90">{error}</p>
+                            <p className="text-xs mt-3 opacity-60 font-medium">Tip: If you've published this to GitHub, ensure your API keys are configured in the environment settings.</p>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
 
                     <div className="flex justify-between items-center">
                       <button
