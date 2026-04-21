@@ -100,6 +100,16 @@ const COMMON_CITIES = [
   "Luxembourg City", "Monaco", "San Marino", "Vatican City"
 ];
 
+const SUGGESTED_ACTIVITIES = [
+  "Beach Relaxing", "Scuba Diving", "Snorkeling", "Surfing", "Sailing", 
+  "Hiking", "Mountain Biking", "Skiing", "Snowboarding", "Rock Climbing",
+  "Wine Tasting", "Cooking Classes", "Local Food Tour", "Street Food Exploration", "Fine Dining",
+  "Art Galleries", "Museum Hopping", "Historic Site Tours", "Architectural Tours", "Opera & Theater",
+  "Nightlife", "Shopping", "Spa & Wellness", "Yoga Retreat", "Meditation",
+  "Photography", "Wildlife Safari", "Bird Watching", "Stargazing", "Hot Air Ballooning",
+  "Canyoning", "Kayaking", "White Water Rafting", "Zip Lining", "Bungee Jumping"
+];
+
 const SafeImage = ({ src, alt, className, ...props }: any) => {
   const [error, setError] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
@@ -172,10 +182,17 @@ export default function App() {
   const [filteredCities, setFilteredCities] = useState<string[]>([]);
   const suggestionRef = useRef<HTMLDivElement>(null);
 
+  const [showActivitySuggestions, setShowActivitySuggestions] = useState(false);
+  const [filteredActivities, setFilteredActivities] = useState<string[]>([]);
+  const activitySuggestionRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (suggestionRef.current && !suggestionRef.current.contains(event.target as Node)) {
         setShowSuggestions(false);
+      }
+      if (activitySuggestionRef.current && !activitySuggestionRef.current.contains(event.target as Node)) {
+        setShowActivitySuggestions(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -271,10 +288,27 @@ export default function App() {
     }
   };
 
-  const addActivity = () => {
-    if (activityInput.trim() && !prefs.activities.includes(activityInput.trim())) {
-      setPrefs({ ...prefs, activities: [...prefs.activities, activityInput.trim()] });
+  const handleActivityInputChange = (value: string) => {
+    setActivityInput(value);
+    if (value.trim().length > 0) {
+      const filtered = SUGGESTED_ACTIVITIES.filter(act => 
+        act.toLowerCase().includes(value.toLowerCase()) && !prefs.activities.includes(act)
+      );
+      setFilteredActivities(filtered);
+      setShowActivitySuggestions(true);
+    } else {
+      const filtered = SUGGESTED_ACTIVITIES.filter(act => !prefs.activities.includes(act));
+      setFilteredActivities(filtered);
+      setShowActivitySuggestions(true);
+    }
+  };
+
+  const addActivity = (activity?: string) => {
+    const activityToAdd = activity || activityInput.trim();
+    if (activityToAdd && !prefs.activities.includes(activityToAdd)) {
+      setPrefs({ ...prefs, activities: [...prefs.activities, activityToAdd] });
       setActivityInput('');
+      setShowActivitySuggestions(false);
     }
   };
 
@@ -552,22 +586,58 @@ export default function App() {
                             </div>
                             <h3 className="text-2xl font-serif text-med-blue">Must-Have Activities</h3>
                           </div>
-                          <div className="flex gap-4 mb-8">
-                            <input
-                              type="text"
-                              value={activityInput}
-                              onChange={(e) => setActivityInput(e.target.value)}
-                              onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addActivity())}
-                              placeholder="e.g. Scuba diving, Art galleries, Local food tour..."
-                              className="flex-1 px-8 py-6 rounded-3xl border-2 border-transparent bg-white/50 focus:bg-white focus:border-med-terracotta focus:ring-8 focus:ring-med-terracotta/5 outline-none transition-all text-lg font-medium"
-                            />
-                            <button
-                              type="button"
-                              onClick={addActivity}
-                              className="bg-med-blue text-white px-10 py-6 rounded-3xl font-bold hover:bg-med-terracotta transition-all shadow-xl"
-                            >
-                              Add
-                            </button>
+                          <div className="relative mb-8" ref={activitySuggestionRef}>
+                            <div className="flex gap-4">
+                              <input
+                                type="text"
+                                value={activityInput}
+                                onChange={(e) => handleActivityInputChange(e.target.value)}
+                                onFocus={() => {
+                                  if (activityInput.trim().length === 0) {
+                                    setFilteredActivities(SUGGESTED_ACTIVITIES.filter(act => !prefs.activities.includes(act)));
+                                  } else {
+                                    const filtered = SUGGESTED_ACTIVITIES.filter(act => 
+                                      act.toLowerCase().includes(activityInput.toLowerCase()) && !prefs.activities.includes(act)
+                                    );
+                                    setFilteredActivities(filtered);
+                                  }
+                                  setShowActivitySuggestions(true);
+                                }}
+                                onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addActivity())}
+                                placeholder="e.g. Scuba diving, Art galleries, Local food tour..."
+                                className="flex-1 px-8 py-6 rounded-3xl border-2 border-transparent bg-white/50 focus:bg-white focus:border-med-terracotta focus:ring-8 focus:ring-med-terracotta/5 outline-none transition-all text-lg font-medium"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => addActivity()}
+                                className="bg-med-blue text-white px-10 py-6 rounded-3xl font-bold hover:bg-med-terracotta transition-all shadow-xl"
+                              >
+                                Add
+                              </button>
+                            </div>
+
+                            <AnimatePresence>
+                              {showActivitySuggestions && filteredActivities.length > 0 && (
+                                <motion.div
+                                  initial={{ opacity: 0, y: -10 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  exit={{ opacity: 0, y: -10 }}
+                                  className="absolute z-50 left-0 right-0 mt-2 bg-white rounded-3xl shadow-2xl border border-med-sand overflow-hidden max-h-64 overflow-y-auto custom-scrollbar"
+                                >
+                                  {filteredActivities.map((act, idx) => (
+                                    <button
+                                      key={idx}
+                                      type="button"
+                                      onClick={() => addActivity(act)}
+                                      className="w-full px-8 py-4 text-left hover:bg-med-cream transition-colors text-med-blue font-medium border-b border-med-sand last:border-0 flex items-center gap-3"
+                                    >
+                                      <Sparkles className="w-4 h-4 text-med-terracotta opacity-50" />
+                                      {act}
+                                    </button>
+                                  ))}
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
                           </div>
                           <div className="flex flex-wrap gap-4">
                             {prefs.activities.map((act) => (
